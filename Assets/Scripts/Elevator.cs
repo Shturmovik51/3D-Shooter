@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Elevator : MonoBehaviour
 {
-   
+    [SerializeField] private Player player;
     [SerializeField] private int elevatorSpeed;
     public bool isPressedButton;
     
@@ -22,10 +22,15 @@ public class Elevator : MonoBehaviour
         if (transform.position.y < 160)
         {
             transform.Translate(Vector3.up * elevatorSpeed * Time.fixedDeltaTime);
+            player.transform.parent = transform;
         }
-        else isPressedButton = false;
+        else
+        {
+            isPressedButton = false;
+            player.transform.parent = null;
+        }
     }
-        
+
 
 
 

@@ -6,6 +6,12 @@ public class Player : MonoBehaviour
 {
     private Vector3 moveDirection;
     private float mouseLook;
+    private float gravity = -9.81f;
+    public Vector3 gravitation;
+    public LayerMask groundMask;
+    public bool isGrounded;
+    [SerializeField] private Transform groundDetector;
+    [SerializeField] private Rigidbody playerRigidbody;
     [SerializeField] private CharacterController charControl;
     [SerializeField] private int playerSpeed;
     [SerializeField] private int sensitivity;
@@ -26,6 +32,7 @@ public class Player : MonoBehaviour
     private List<Bullet> bullets;
     private void Start()
     {
+        isGrounded = false;
         bullets = new List<Bullet>();
         while (bullets.Count != bulletCount)
         {
@@ -45,8 +52,8 @@ public class Player : MonoBehaviour
             bomb.bombRigidbody.isKinematic = true;
             bombs.Add(bombSample);
         }
-
-        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
     void Update()
     {
@@ -63,17 +70,33 @@ public class Player : MonoBehaviour
             BombThrow();
         }
 
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            gravitation.y = Mathf.Sqrt(6 * -2 * gravity);
+        }
+
     }
         
     private void PlayerMovement()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
+
+        isGrounded = Physics.CheckSphere(groundDetector.position, 0.7f, groundMask);
         
         moveDirection = transform.right*x + transform.forward*z;
+        gravitation.y += gravity * Time.deltaTime; 
         
         charControl.Move(moveDirection * playerSpeed * Time.deltaTime);
-       // transform.Translate(moveDirection * playerSpeed * Time.deltaTime);
+
+        if (isGrounded)
+        {
+            gravitation.y = 0;
+        }
+        else
+        {
+            charControl.Move(gravitation * Time.deltaTime);
+        }   
     }
 
     private void PlayerLook()
@@ -86,12 +109,12 @@ public class Player : MonoBehaviour
     {
         var bullet = bullets[0];
         bullets.Remove(bullet);
-        bullet.gameObject.SetActive(true);
         bullet.bulletRigidbody.isKinematic = false;
         bullet.transform.position = bulletStartPos.transform.position;
         bullet.transform.rotation = transform.rotation;
-        bullet.bulletRigidbody.AddForce(transform.forward*shootForce, ForceMode.Impulse);        
         bullet.transform.parent = null;
+        bullet.gameObject.SetActive(true);
+        bullet.bulletRigidbody.AddForce(transform.forward*shootForce, ForceMode.Impulse);        
         StartCoroutine(BulletLifeTime(bullet));
     }
 
@@ -99,12 +122,12 @@ public class Player : MonoBehaviour
     {
         var bomb = bombs[0];
         bombs.Remove(bomb);
-        bomb.gameObject.SetActive(true);
         bomb.bombRigidbody.isKinematic = false;
         bomb.transform.position = bombStartPos.transform.position;
         bomb.transform.rotation = bombStartPos.transform.rotation;
-        bomb.bombRigidbody.AddForce(bombStartPos.transform.forward * throwForce, ForceMode.Impulse);
         bomb.transform.parent = null;
+        bomb.gameObject.SetActive(true);
+        bomb.bombRigidbody.AddForce(bombStartPos.transform.forward * throwForce, ForceMode.Impulse);
         isBombReload = true;
         StartCoroutine(BombLifeTime(bomb));
     }
