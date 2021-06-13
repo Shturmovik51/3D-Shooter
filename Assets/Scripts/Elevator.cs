@@ -45,7 +45,6 @@ public class Elevator : MonoBehaviour
             CloseDoors();
         }
     }
-
     private void ElevatorUp()
     {
         if (transform.position.y < 160)
