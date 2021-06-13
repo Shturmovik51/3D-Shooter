@@ -4,17 +4,26 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Player instance;
+
     private Vector3 moveDirection;
-    private float mouseLook;
     private float gravity = -9.81f;
     public Vector3 gravitation;
     public LayerMask groundMask;
     public bool isGrounded;
+    [SerializeField] private int ammoCount;
+    public int AmmoCount { get { return ammoCount; } set { ammoCount = value; } }
+    [SerializeField] private Health playerHealth;
+    public Health PlayerHealth { get { return playerHealth; } set { playerHealth = value; } }
+
     [SerializeField] private Transform groundDetector;
     [SerializeField] private Rigidbody playerRigidbody;
     [SerializeField] private CharacterController charControl;
     [SerializeField] private int playerSpeed;
+    [SerializeField] private int shiftedSpeed;
     [SerializeField] private int sensitivity;
+    [SerializeField] private Transform head;
+    [SerializeField] private Transform rightArm;
 
     [SerializeField] private Bomb bomb;
     [SerializeField] private int bombCount;
@@ -30,6 +39,13 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject bulletStartPos;
     [SerializeField] private GameObject bulletContainer;
     private List<Bullet> bullets;
+
+
+    private float xRotation = 0f;
+    private void Awake()
+    {
+        instance = this;
+    }
     private void Start()
     {
         isGrounded = false;
@@ -39,7 +55,7 @@ public class Player : MonoBehaviour
             var bulletSample = Instantiate(bullet, bulletContainer.transform.position, Quaternion.identity);
             bulletSample.transform.parent = bulletContainer.transform;
             bullet.gameObject.SetActive(false);
-            bullet.bulletRigidbody.isKinematic = true;
+            //bullet.bulletRigidbody.isKinematic = true;
             bullets.Add(bulletSample);
         }
 
@@ -49,18 +65,18 @@ public class Player : MonoBehaviour
             var bombSample = Instantiate(bomb, bombContainer.transform.position, Quaternion.identity);
             bombSample.transform.parent = bombContainer.transform;
             bomb.gameObject.SetActive(false);
-            bomb.bombRigidbody.isKinematic = true;
+            //bomb.bombRigidbody.isKinematic = true;
             bombs.Add(bombSample);
         }
         Cursor.lockState = CursorLockMode.Locked;
         //Cursor.visible = false;
     }
     void Update()
-    {
+    {      
         PlayerMovement();
         PlayerLook();
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && ammoCount > 0)
         {
             Shoot();
         }
@@ -74,7 +90,6 @@ public class Player : MonoBehaviour
         {
             gravitation.y = Mathf.Sqrt(6 * -2 * gravity);
         }
-
     }
         
     private void PlayerMovement()
@@ -82,12 +97,18 @@ public class Player : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        shiftedSpeed = 0;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            shiftedSpeed = playerSpeed;
+        }
+
         isGrounded = Physics.CheckSphere(groundDetector.position, 0.7f, groundMask);
         
         moveDirection = transform.right*x + transform.forward*z;
         gravitation.y += gravity * Time.deltaTime; 
         
-        charControl.Move(moveDirection * playerSpeed * Time.deltaTime);
+        charControl.Move(moveDirection * (playerSpeed + shiftedSpeed) * Time.deltaTime);
 
         if (isGrounded)
         {
@@ -101,20 +122,29 @@ public class Player : MonoBehaviour
 
     private void PlayerLook()
     {        
-        mouseLook = Input.GetAxis("Mouse X");
-        transform.Rotate(0, mouseLook * sensitivity * Time.deltaTime, 0);
+        var mouseLookX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        var mouseLookY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+                
+        xRotation -= mouseLookY; 
+        xRotation = Mathf.Clamp(xRotation, -45f, 45f);
+        transform.Rotate(0f, mouseLookX, 0f);       
+        head.localRotation = Quaternion.Euler(xRotation, 0, 0);
+
+        rightArm.localRotation = head.localRotation;
     }
 
     private void Shoot()
     {
         var bullet = bullets[0];
         bullets.Remove(bullet);
-        bullet.bulletRigidbody.isKinematic = false;
+        //bullet.bulletRigidbody.isKinematic = false;
         bullet.transform.position = bulletStartPos.transform.position;
-        bullet.transform.rotation = transform.rotation;
+        bullet.transform.rotation = rightArm.rotation;
         bullet.transform.parent = null;
         bullet.gameObject.SetActive(true);
-        bullet.bulletRigidbody.AddForce(transform.forward*shootForce, ForceMode.Impulse);        
+        bullet.bulletRigidbody.velocity = Vector3.zero;
+        bullet.bulletRigidbody.AddForce(rightArm.forward*shootForce, ForceMode.Impulse);
+        ammoCount--;
         StartCoroutine(BulletLifeTime(bullet));
     }
 
@@ -122,7 +152,7 @@ public class Player : MonoBehaviour
     {
         var bomb = bombs[0];
         bombs.Remove(bomb);
-        bomb.bombRigidbody.isKinematic = false;
+        //bomb.bombRigidbody.isKinematic = false;
         bomb.transform.position = bombStartPos.transform.position;
         bomb.transform.rotation = bombStartPos.transform.rotation;
         bomb.transform.parent = null;
@@ -138,7 +168,8 @@ public class Player : MonoBehaviour
         b.transform.position = bulletContainer.transform.position;
         b.transform.parent = bulletContainer.transform;
         b.transform.rotation = Quaternion.identity;
-        b.bulletRigidbody.isKinematic = true;
+        //b.bulletRigidbody.isKinematic = true;
+        b.bulletRigidbody.velocity = Vector3.zero;
         b.gameObject.SetActive(false);
 
         yield break;
@@ -153,7 +184,8 @@ public class Player : MonoBehaviour
         b.transform.position = bombContainer.transform.position;
         b.transform.parent = bombContainer.transform;
         b.transform.rotation = Quaternion.identity;
-        b.bombRigidbody.isKinematic = true;
+        //b.bombRigidbody.isKinematic = true;
+        b.bombRigidbody.velocity = Vector3.zero;
         b.gameObject.SetActive(false);
 
         yield break;

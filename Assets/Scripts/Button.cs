@@ -10,7 +10,7 @@ public class Button : MonoBehaviour
     {
         if (col.CompareTag("Player"))
         {
-            elevator.isPressedButton = true;
+            elevator.isNeedClose = true;
         }
     }
 }
