@@ -17,13 +17,13 @@ public class Player : MonoBehaviour
     public Health PlayerHealth { get { return playerHealth; } set { playerHealth = value; } }
 
     [SerializeField] private Transform groundDetector;
-    [SerializeField] private Rigidbody playerRigidbody;
     [SerializeField] private CharacterController charControl;
     [SerializeField] private int playerSpeed;
     [SerializeField] private int shiftedSpeed;
     [SerializeField] private int sensitivity;
     [SerializeField] private Transform head;
     [SerializeField] private Transform rightArm;
+    [SerializeField] private Transform scope;
 
     [SerializeField] private Bomb bomb;
     [SerializeField] private int bombCount;
@@ -40,6 +40,9 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject bulletContainer;
     private List<Bullet> bullets;
 
+    private bool isShooting;
+    private bool isOnReloading;
+
 
     private float xRotation = 0f;
     private void Awake()
@@ -55,7 +58,6 @@ public class Player : MonoBehaviour
             var bulletSample = Instantiate(bullet, bulletContainer.transform.position, Quaternion.identity);
             bulletSample.transform.parent = bulletContainer.transform;
             bullet.gameObject.SetActive(false);
-            //bullet.bulletRigidbody.isKinematic = true;
             bullets.Add(bulletSample);
         }
 
@@ -65,20 +67,20 @@ public class Player : MonoBehaviour
             var bombSample = Instantiate(bomb, bombContainer.transform.position, Quaternion.identity);
             bombSample.transform.parent = bombContainer.transform;
             bomb.gameObject.SetActive(false);
-            //bomb.bombRigidbody.isKinematic = true;
             bombs.Add(bombSample);
         }
+
         Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
+        Cursor.visible = false;
     }
     void Update()
     {      
         PlayerMovement();
         PlayerLook();
 
-        if (Input.GetKeyDown(KeyCode.Mouse0) && ammoCount > 0)
+        if (Input.GetKey(KeyCode.Mouse0) && ammoCount > 0)
         {
-            Shoot();
+            isShooting = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && !isBombReload)
@@ -90,6 +92,13 @@ public class Player : MonoBehaviour
         {
             gravitation.y = Mathf.Sqrt(6 * -2 * gravity);
         }
+
+        if (isShooting == true && !isOnReloading)
+        {
+            StartCoroutine(Shoot());
+        }
+
+        ScopeRay();
     }
         
     private void PlayerMovement()
@@ -132,12 +141,17 @@ public class Player : MonoBehaviour
 
         rightArm.localRotation = head.localRotation;
     }
-
-    private void Shoot()
+    private void ScopeRay()
     {
+       // Ray ray = new Ray(scope.position, transform.forward);
+       // Debug.DrawRay(scope.position, scope.forward * 20, Color.red);
+    }
+       
+    private IEnumerator Shoot()
+    {
+        isOnReloading = true;
         var bullet = bullets[0];
         bullets.Remove(bullet);
-        //bullet.bulletRigidbody.isKinematic = false;
         bullet.transform.position = bulletStartPos.transform.position;
         bullet.transform.rotation = rightArm.rotation;
         bullet.transform.parent = null;
@@ -146,13 +160,17 @@ public class Player : MonoBehaviour
         bullet.bulletRigidbody.AddForce(rightArm.forward*shootForce, ForceMode.Impulse);
         ammoCount--;
         StartCoroutine(BulletLifeTime(bullet));
+        yield return new WaitForSeconds(0.1f);
+        isOnReloading = false;
+        isShooting = false;
+
+        yield break;
     }
 
     private void BombThrow()
     {
         var bomb = bombs[0];
         bombs.Remove(bomb);
-        //bomb.bombRigidbody.isKinematic = false;
         bomb.transform.position = bombStartPos.transform.position;
         bomb.transform.rotation = bombStartPos.transform.rotation;
         bomb.transform.parent = null;
@@ -168,7 +186,6 @@ public class Player : MonoBehaviour
         b.transform.position = bulletContainer.transform.position;
         b.transform.parent = bulletContainer.transform;
         b.transform.rotation = Quaternion.identity;
-        //b.bulletRigidbody.isKinematic = true;
         b.bulletRigidbody.velocity = Vector3.zero;
         b.gameObject.SetActive(false);
 
@@ -184,7 +201,6 @@ public class Player : MonoBehaviour
         b.transform.position = bombContainer.transform.position;
         b.transform.parent = bombContainer.transform;
         b.transform.rotation = Quaternion.identity;
-        //b.bombRigidbody.isKinematic = true;
         b.bombRigidbody.velocity = Vector3.zero;
         b.gameObject.SetActive(false);
 
