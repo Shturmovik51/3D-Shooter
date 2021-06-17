@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Health : MonoBehaviour
 {
+    public UnityAction deathEntity;
     [SerializeField] private int thisHealth;
     public int ThisHealth { get { return thisHealth; } set { thisHealth = value;} }
 
@@ -14,7 +17,14 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        if(thisHealth <= 0)
+        if(thisHealth <= 0 && gameObject.CompareTag("Player") ||
+            thisHealth <= 0 && gameObject.CompareTag("Enemy")   )
+        {
+            GameManager.instance.healthContainer.Remove(gameObject);
+            deathEntity();
+            Destroy(this);
+        }
+        else if (thisHealth <= 0)
         {
             Destroy(gameObject);
         }
