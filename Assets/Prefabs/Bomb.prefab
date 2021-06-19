@@ -254,7 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea2e008484fa3074287e806e028bb2c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explRadius: 10
+  explRadius: 15
   explPower: 500
   explDamage: 50
 --- !u!1 &5547994408481581366

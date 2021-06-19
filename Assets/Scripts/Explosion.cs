@@ -23,17 +23,18 @@ public class Explosion : MonoBehaviour
         {
             Rigidbody hitRB = hit.GetComponent<Rigidbody>();
             if (hitRB != null && hitRB != entityRigidbody)
-            {
-                if (GameManager.instance.healthContainer.ContainsKey(hitRB.gameObject))
-                {
-                    var healh = GameManager.instance.healthContainer[hitRB.gameObject];
-                    healh.TakeDamage(explDamage);
-                }
+            {               
 
                 hitRB.gameObject.isStatic = false;
                 hitRB.isKinematic = false;
                 hitRB.AddExplosionForce(explPower, explosionPos, explRadius, 3.0f, ForceMode.Impulse);
 
+            }
+
+            if (GameManager.instance.healthContainer.ContainsKey(hit.gameObject))
+            {
+                var healh = GameManager.instance.healthContainer[hit.gameObject];
+                healh.TakeDamage(explDamage);
             }
         }
     }

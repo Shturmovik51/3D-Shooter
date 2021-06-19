@@ -18811,8 +18811,16 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3385423610002877389, guid: 979b2dc351807ab419bf8107a49f4e3d, type: 3}
+      propertyPath: shootForce
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3385423610002877389, guid: 979b2dc351807ab419bf8107a49f4e3d, type: 3}
       propertyPath: throwForce
-      value: 50
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 3385423610002877389, guid: 979b2dc351807ab419bf8107a49f4e3d, type: 3}
+      propertyPath: plRigidbody
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 3385423610002877389, guid: 979b2dc351807ab419bf8107a49f4e3d, type: 3}
       propertyPath: bombStartPos
