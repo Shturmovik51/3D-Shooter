@@ -7,10 +7,11 @@ public class Player : MonoBehaviour
     public static Player instance;
 
     private Vector3 moveDirection;
-    private float gravity = -9.81f;
+    private float gravity = -19.81f;
     public Vector3 gravitation;
     public LayerMask groundMask;
     public bool isGrounded;
+    [SerializeField] private int jumpForse;
     [SerializeField] private int ammoCount;
     public int AmmoCount { get { return ammoCount; } set { ammoCount = value; } }
     [SerializeField] private Health playerHealth;
@@ -28,9 +29,8 @@ public class Player : MonoBehaviour
     [SerializeField] private Bomb bomb;
     [SerializeField] private int bombCount;
     [SerializeField] private int throwForce;
-    [SerializeField] private GameObject bombStartPos;
-    [SerializeField] private GameObject bombContainer;
-    private List<Bomb> bombs;
+    [SerializeField] private Transform bombStartPos;
+    public List<Bomb> bombs;
     private bool isBombReload;
 
     [SerializeField] private Bullet bullet;
@@ -57,18 +57,11 @@ public class Player : MonoBehaviour
         {
             var bulletSample = Instantiate(bullet, bulletContainer.transform.position, Quaternion.identity);
             bulletSample.transform.parent = bulletContainer.transform;
-            bullet.gameObject.SetActive(false);
+            bulletSample.gameObject.SetActive(false);
             bullets.Add(bulletSample);
         }
 
-        bombs = new List<Bomb>();
-        while (bombs.Count != bombCount)
-        {
-            var bombSample = Instantiate(bomb, bombContainer.transform.position, Quaternion.identity);
-            bombSample.transform.parent = bombContainer.transform;
-            bomb.gameObject.SetActive(false);
-            bombs.Add(bombSample);
-        }
+        BombCountFiller();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -86,12 +79,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse1) && !isBombReload)
         {
             BombThrow();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-        {
-            gravitation.y = Mathf.Sqrt(6 * -2 * gravity);
-        }
+        }       
 
         if (isShooting == true && !isOnReloading)
         {
@@ -103,8 +91,11 @@ public class Player : MonoBehaviour
         
     private void PlayerMovement()
     {
+        
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
+
+        isGrounded = Physics.CheckSphere(groundDetector.position, 0.3f, groundMask);
 
         shiftedSpeed = 0;
         if (Input.GetKey(KeyCode.LeftShift))
@@ -112,21 +103,22 @@ public class Player : MonoBehaviour
             shiftedSpeed = playerSpeed;
         }
 
-        isGrounded = Physics.CheckSphere(groundDetector.position, 0.7f, groundMask);
-        
         moveDirection = transform.right*x + transform.forward*z;
-        gravitation.y += gravity * Time.deltaTime; 
         
-        charControl.Move(moveDirection * (playerSpeed + shiftedSpeed) * Time.deltaTime);
-
         if (isGrounded)
         {
-            gravitation.y = 0;
+            gravitation.y = -2f;
         }
-        else
+        
+        if (Input.GetButton("Jump") && isGrounded)
         {
-            charControl.Move(gravitation * Time.deltaTime);
-        }   
+            gravitation.y = Mathf.Sqrt(jumpForse * -2 * gravity);
+        }
+
+        gravitation.y += gravity * Time.deltaTime; 
+
+        charControl.Move(moveDirection * (playerSpeed + shiftedSpeed) * Time.deltaTime);
+        charControl.Move(gravitation * Time.deltaTime);
     }
 
     private void PlayerLook()
@@ -145,6 +137,33 @@ public class Player : MonoBehaviour
     {
        // Ray ray = new Ray(scope.position, transform.forward);
        // Debug.DrawRay(scope.position, scope.forward * 20, Color.red);
+    }
+
+    private void BombCountFiller()
+    {
+        bombs = new List<Bomb>();
+        while (bombs.Count != bombCount)
+        {
+            var bombSample = Instantiate(bomb, bombStartPos.position, Quaternion.identity);
+            bombSample.transform.parent = bombStartPos;
+            bombSample.gameObject.SetActive(false);
+            bombs.Add(bombSample);
+        }
+    }
+
+    private void BombThrow()
+    {
+        var bomb = bombs[0];
+        bombs.Remove(bomb);
+        bomb.Throw(bomb, throwForce, bombStartPos);
+        StartCoroutine(ThrowReloader());
+    }
+    private IEnumerator ThrowReloader()
+    {
+        isBombReload = true;
+        yield return new WaitForSeconds(3);
+        isBombReload = false;
+        yield break;
     }
        
     private IEnumerator Shoot()
@@ -165,20 +184,7 @@ public class Player : MonoBehaviour
         isShooting = false;
 
         yield break;
-    }
-
-    private void BombThrow()
-    {
-        var bomb = bombs[0];
-        bombs.Remove(bomb);
-        bomb.transform.position = bombStartPos.transform.position;
-        bomb.transform.rotation = bombStartPos.transform.rotation;
-        bomb.transform.parent = null;
-        bomb.gameObject.SetActive(true);
-        bomb.bombRigidbody.AddForce(bombStartPos.transform.forward * throwForce, ForceMode.Impulse);
-        isBombReload = true;
-        StartCoroutine(BombLifeTime(bomb));
-    }
+    }   
     private IEnumerator BulletLifeTime(Bullet b)
     {
         yield return new WaitForSeconds(4);
@@ -191,20 +197,6 @@ public class Player : MonoBehaviour
 
         yield break;
     }
-
-    private IEnumerator BombLifeTime(Bomb b)
-    {
-        yield return new WaitForSeconds(2);
-        isBombReload = false;
-        yield return new WaitForSeconds(2);
-        bombs.Add(b);
-        b.transform.position = bombContainer.transform.position;
-        b.transform.parent = bombContainer.transform;
-        b.transform.rotation = Quaternion.identity;
-        b.bombRigidbody.velocity = Vector3.zero;
-        b.gameObject.SetActive(false);
-
-        yield break;
-    }
+    
 }
 

@@ -133,7 +133,7 @@ public class EnemyUI : MonoBehaviour
     {
         var bodyPos = new Vector3(target.position.x, body.position.y, target.position.z) - body.position;
         // var bodyPos = new Vector3(target.position.x - body.position.x, 0f, target.position.z - body.position.z);
-        var bodyDir = Vector3.RotateTowards(body.forward, bodyPos, rotationSpeed * Time.deltaTime, 0.0f);
+        var bodyDir = Vector3.RotateTowards(body.forward, bodyPos + Vector3.right*1.5f, rotationSpeed * Time.deltaTime, 0.0f);
         body.rotation = Quaternion.LookRotation(bodyDir);
         isShooting = true;
     }
@@ -175,7 +175,7 @@ public class EnemyUI : MonoBehaviour
 
         enemyRigidbody.freezeRotation = false;
         enemyRigidbody.isKinematic = false;
-        enemyRigidbody.AddForce(Vector3.forward*50, ForceMode.Impulse);
+        enemyRigidbody.AddForce(Random.insideUnitSphere*200, ForceMode.Impulse);        
         Destroy(observer.gameObject);
         Destroy(navMeshAgent);
         Destroy(this);        

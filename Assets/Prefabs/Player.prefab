@@ -657,11 +657,11 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3385423609681260501}
-  m_LocalRotation: {x: -0.25266048, y: 0, z: 0, w: 0.96755505}
-  m_LocalPosition: {x: -0, y: -0.187, z: 1.174}
+  m_LocalRotation: {x: -0.25266048, y: -0, z: -0, w: 0.96755505}
+  m_LocalPosition: {x: -0.6, y: -0.78700006, z: 1.1740003}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3385423610002877390}
+  m_Father: {fileID: 3385423610356716814}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -29.27, y: 0, z: 0}
 --- !u!1 &3385423610002877391
@@ -700,7 +700,6 @@ Transform:
   - {fileID: 3385423611314259509}
   - {fileID: 3385423610356716814}
   - {fileID: 3385423609570017837}
-  - {fileID: 3385423609681260500}
   - {fileID: 3385423610769347353}
   - {fileID: 3385423610752506513}
   m_Father: {fileID: 0}
@@ -735,7 +734,7 @@ MonoBehaviour:
   scope: {fileID: 649900690}
   bomb: {fileID: 8584865487918342827, guid: a6b3b34563e0bcd449ed6e924705e156, type: 3}
   bombCount: 4
-  throwForce: 10
+  throwForce: 15
   bombStartPos: {fileID: 3385423609681260501}
   bombContainer: {fileID: 3385423610782803403}
   bullet: {fileID: 8672534744196658101, guid: d5be851299fd5324e8d4bd8c1c817d2a, type: 3}
@@ -969,6 +968,7 @@ Transform:
   - {fileID: 3385423610750401582}
   - {fileID: 3385423609596209381}
   - {fileID: 649900690}
+  - {fileID: 3385423609681260500}
   m_Father: {fileID: 3385423610002877390}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1195,7 +1195,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3385423610002877390}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3385423610769347354
 GameObject:
@@ -1225,7 +1225,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3385423610002877390}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3385423610782803403
 GameObject:
