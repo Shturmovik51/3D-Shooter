@@ -17,17 +17,24 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        if(thisHealth <= 0 && gameObject.CompareTag("Player") ||
-            thisHealth <= 0 && gameObject.CompareTag("Enemy")   )
+        if(thisHealth <= 0f)
         {
             GameManager.instance.healthContainer.Remove(gameObject);
             deathEntity();
             Destroy(this);
         }
-        else if (thisHealth <= 0)
-        {
-            Destroy(gameObject);
-        }
+
+        //if(thisHealth <= 0 && gameObject.CompareTag("Player") ||
+        //    thisHealth <= 0 && gameObject.CompareTag("Enemy")   )
+        //{
+        //    GameManager.instance.healthContainer.Remove(gameObject);
+        //    deathEntity();
+        //    Destroy(this);
+        //}
+        //else if (thisHealth <= 0)
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     public void TakeDamage(int damage)

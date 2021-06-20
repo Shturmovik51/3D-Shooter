@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private Transform patroslWPParent;
     [SerializeField] private Transform safesWPParent;
     [SerializeField] private Transform spawnPoint;
+    [SerializeField] private Health spawnerHealth;
     private List<Transform> patrolPoints;
     private List<Transform> safePoints;
     private int enemyCount;
@@ -15,6 +16,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private int enemyMaxCount;
     private void Start()
     {
+        spawnerHealth.deathEntity += SpawnerDestroy;
         patrolPoints = new List<Transform>();
         safePoints = new List<Transform>();
         WPinitialyser(patroslWPParent, safesWPParent);
@@ -50,5 +52,10 @@ public class Spawner : MonoBehaviour
         enemyUI.WPinitialyser(patrolPoints, safePoints);
         isSpawning = true;
         enemyCount++;
+    }
+
+    private void SpawnerDestroy()
+    {
+        Destroy(gameObject);
     }
 }

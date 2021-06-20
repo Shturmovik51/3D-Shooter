@@ -8,8 +8,8 @@ public class Elevator : MonoBehaviour
     [SerializeField] private Player player;
     [SerializeField] private int elevatorSpeed;
     [SerializeField] private int openDoorSpeed;
-    [SerializeField] private GameObject ElPanelLeft;
-    [SerializeField] private GameObject ElPanelRight;
+    [SerializeField] private ElectricalPanel ElPanelLeft;
+    [SerializeField] private ElectricalPanel ElPanelRight;
     [SerializeField] private Transform leftD;
     [SerializeField] private Transform rightD;
     public bool isPressedButton;
@@ -30,12 +30,12 @@ public class Elevator : MonoBehaviour
             ElevatorUp();
         }
 
-        if (ElPanelRight == null)
+        if (ElPanelRight.isDestroyed == true)
         {
             isAlarm = false;
         }
 
-        if (isNeedOpen && isAlarm == false && ElPanelLeft == null)
+        if (isNeedOpen && isAlarm == false && ElPanelLeft.isDestroyed == true)
         {
             OpenDoors();
         }

@@ -2,18 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TankTower : MonoBehaviour
+public class Tank : MonoBehaviour
 {
     [SerializeField] private Transform target;
     [SerializeField] private Transform turrel;
     [SerializeField] private Transform bulletStartPos;
     [SerializeField] private Transform bulletContainer;
+    [SerializeField] private Transform tankTover;
+    [SerializeField] private Explosion engineExpl;
+    [SerializeField] private Health tankHealth;
     [SerializeField] private int shootForce;
     [SerializeField] private Bullet bullet;
     private List<Bullet> bullets;
     private bool isHaveTarget;
     private void Start()
     {
+        tankHealth.deathEntity += TankExplosion;
+
         bullets = new List<Bullet>();
         while (bullets.Count != 50)
         {
@@ -69,9 +74,9 @@ public class TankTower : MonoBehaviour
 
     private void TowerLook()
     {
-        var pos = target.position - transform.position;
-        var dir = Vector3.RotateTowards(transform.forward, pos, 0.2f * Time.deltaTime, 0.0f);
-        transform.rotation = Quaternion.LookRotation(dir);
+        var pos = target.position - tankTover.position;
+        var dir = Vector3.RotateTowards(tankTover.forward, pos, 0.2f * Time.deltaTime, 0.0f);
+        tankTover.rotation = Quaternion.LookRotation(dir);
     }
     private void OnTriggerStay(Collider other)
     {
@@ -80,5 +85,11 @@ public class TankTower : MonoBehaviour
             TurrelLook();
             TowerLook();
         }       
+    }
+
+    private void TankExplosion()
+    {
+        engineExpl.Boom();
+        Destroy(engineExpl.gameObject);
     }
 }
