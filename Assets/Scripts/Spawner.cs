@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    [SerializeField] private EnemyUI spawnObject;
+    [SerializeField] private Enemy spawnObject;
     [SerializeField] private Transform patroslWPParent;
     [SerializeField] private Transform safesWPParent;
     [SerializeField] private Transform spawnPoint;
@@ -48,8 +48,8 @@ public class Spawner : MonoBehaviour
         yield return new WaitForSeconds(3);
         var enemySample = Instantiate(spawnObject, spawnPoint.transform.position, Quaternion.identity);
         enemySample.transform.parent = null;
-        var enemyUI = enemySample.GetComponent<EnemyUI>();
-        enemyUI.WPinitialyser(patrolPoints, safePoints);
+        var enemy = enemySample.GetComponent<Enemy>();
+        enemy.WPinitialyser(patrolPoints, safePoints);
         isSpawning = true;
         enemyCount++;
     }

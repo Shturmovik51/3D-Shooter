@@ -7,6 +7,10 @@ public class Bullet : MonoBehaviour
     public Rigidbody bulletRigidbody;
     [SerializeField] private int bulletDamage;
     //public Rigidbody BulletRigidbody { get; set; }
+    private void OnEnable()
+    {
+        SoundManager.instance.shoot.Play();
+    }
 
     private void OnCollisionEnter(Collision col)
     {

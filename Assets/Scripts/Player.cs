@@ -11,8 +11,12 @@ public class Player : MonoBehaviour
     public Vector3 gravitation;
     public LayerMask groundMask;
     public bool isGrounded;
+    private int playerVelosity;
+    private Vector3 oldPos;
+    private Vector3 newPos;
     [SerializeField] private int jumpForse;
     [SerializeField] private int ammoCount;
+    [SerializeField] private Animator playerAnimator;
     public int AmmoCount { get { return ammoCount; } set { ammoCount = value; } }
     [SerializeField] private Health playerHealth;
     public Health PlayerHealth { get { return playerHealth; } set { playerHealth = value; } }
@@ -42,7 +46,7 @@ public class Player : MonoBehaviour
 
     private bool isShooting;
     private bool isOnReloading;
-
+    public bool isWinner = false;
 
     private float xRotation = 0f;
     private void Awake()
@@ -51,6 +55,8 @@ public class Player : MonoBehaviour
     }
     private void Start()
     {
+        //newPos = oldPos = transform.position;
+
         isGrounded = false;
         bullets = new List<Bullet>();
         while (bullets.Count != bulletCount)
@@ -67,10 +73,12 @@ public class Player : MonoBehaviour
         Cursor.visible = false;
     }
     void Update()
-    {      
+    {
+        if (isWinner) return;
+
         PlayerMovement();
         PlayerLook();
-
+                
         if (Input.GetKey(KeyCode.Mouse0) && ammoCount > 0)
         {
             isShooting = true;
@@ -90,11 +98,11 @@ public class Player : MonoBehaviour
     }
         
     private void PlayerMovement()
-    {
-        
+    {       
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        oldPos = transform.position;
         isGrounded = Physics.CheckSphere(groundDetector.position, 0.3f, groundMask);
 
         shiftedSpeed = 0;
@@ -119,6 +127,18 @@ public class Player : MonoBehaviour
 
         charControl.Move(moveDirection * (playerSpeed + shiftedSpeed) * Time.deltaTime);
         charControl.Move(gravitation * Time.deltaTime);
+
+        newPos = transform.position;
+        playerVelosity = (int)(Vector3.Magnitude(newPos - oldPos) / Time.deltaTime);
+
+        if (playerVelosity != 0)
+        {
+            playerAnimator.SetBool("IsWalking",true);
+        }
+        else
+        {
+            playerAnimator.SetBool("IsWalking", false);
+        }
     }
 
     private void PlayerLook()
@@ -178,6 +198,7 @@ public class Player : MonoBehaviour
         bullet.bulletRigidbody.velocity = Vector3.zero;
         bullet.bulletRigidbody.AddForce(rightArm.forward*shootForce, ForceMode.Impulse);
         ammoCount--;
+        playerAnimator.SetTrigger("Shoot");
         StartCoroutine(BulletLifeTime(bullet));
         yield return new WaitForSeconds(0.1f);
         isOnReloading = false;

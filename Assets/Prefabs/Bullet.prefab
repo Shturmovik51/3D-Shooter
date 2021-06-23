@@ -126,4 +126,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletRigidbody: {fileID: 5858653414583778585}
-  bulletDamage: 5
+  bulletDamage: 100

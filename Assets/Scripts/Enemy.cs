@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyUI : MonoBehaviour
+public class Enemy : MonoBehaviour
 {
     [SerializeField] private Observer observer;
     [SerializeField] private Health enemyHealth;
     [SerializeField] private Rigidbody enemyRigidbody;
     [SerializeField] private List<Transform> patrolPoints;
     [SerializeField] private List<Transform> safePoints;
+    [SerializeField] private Animator enemyAnimator;
     private Transform currentPoint = null;
     private Transform currentSafePoint = null;
     private Transform newPoint;
@@ -29,6 +30,9 @@ public class EnemyUI : MonoBehaviour
     private bool isShooting;
     private bool isOnReloading;
     public bool isDead;
+    private Vector3 oldPos;
+    private Vector3 newPos;
+    private float enemyVelosity;
 
 
     private void Awake()
@@ -50,28 +54,26 @@ public class EnemyUI : MonoBehaviour
     private void Start()
     {
         enemyHealth.deathEntity += Death;
+        enemyAnimator.SetBool("IsWalking", true);
     }
     private void Update()
     {
-        if (!isDead)
+        if (isDead) return;        
+
+        if (target == null)
         {
-
-            if (target == null)
-            {
-                Patrol();
-            }
-            else
-            {
-                Alarm();
-            }
-
-            if (isShooting == true && !isOnReloading)
-            {
-                StartCoroutine(Shoot());
-            }
+            Patrol();
+        }
+        else
+        {
+            Alarm();
         }
 
-    }    
+        if (isShooting == true && !isOnReloading)
+        {
+            StartCoroutine(Shoot());
+        }
+    }
     public void WPinitialyser(List<Transform> patrol, List<Transform> safe)
     {
         patrolPoints = patrol;
@@ -81,7 +83,7 @@ public class EnemyUI : MonoBehaviour
     {
         isShooting = false;
 
-        if (currentPoint == null) 
+        if (currentPoint == null)
         {
             currentPoint = patrolPoints[Random.Range(0, patrolPoints.Count)];
             navMeshAgent.SetDestination(currentPoint.position);
@@ -99,15 +101,16 @@ public class EnemyUI : MonoBehaviour
             }
             navMeshAgent.destination = (newPoint.position);
         }
-    }
         
+    }
+
     public void SafePointRun()
     {
         currentPoint = null;
 
-        if(currentSafePoint == null)
+        if (currentSafePoint == null)
         {
-            currentSafePoint = safePoints[Random.Range(0, safePoints.Count)];            
+            currentSafePoint = safePoints[Random.Range(0, safePoints.Count)];
         }
         navMeshAgent.SetDestination(currentSafePoint.position);
         Debug.Log("Alarm!");
@@ -133,7 +136,7 @@ public class EnemyUI : MonoBehaviour
     {
         var bodyPos = new Vector3(target.position.x, body.position.y, target.position.z) - body.position;
         // var bodyPos = new Vector3(target.position.x - body.position.x, 0f, target.position.z - body.position.z);
-        var bodyDir = Vector3.RotateTowards(body.forward, bodyPos + Vector3.right*1.5f, rotationSpeed * Time.deltaTime, 0.0f);
+        var bodyDir = Vector3.RotateTowards(body.forward, bodyPos + Vector3.right * 1.5f, rotationSpeed * Time.deltaTime, 0.0f);
         body.rotation = Quaternion.LookRotation(bodyDir);
         isShooting = true;
     }
@@ -149,9 +152,11 @@ public class EnemyUI : MonoBehaviour
         bullet.gameObject.SetActive(true);
         bullet.bulletRigidbody.velocity = Vector3.zero;
         bullet.bulletRigidbody.AddForce(rightArm.forward * shootForce, ForceMode.Impulse);
-        StartCoroutine(BulletLifeTime(bullet));
-        yield return new WaitForSeconds(1);       
+        enemyAnimator.SetTrigger("Shoot");
+        StartCoroutine(BulletLifeTime(bullet));        
+        yield return new WaitForSeconds(1);
         isOnReloading = false;
+        //enemyAnimator.ResetTrigger("Shoot");
 
         yield break;
     }
@@ -170,15 +175,17 @@ public class EnemyUI : MonoBehaviour
 
     public void Death()
     {
+
+        enemyAnimator.SetBool("IsWalking", false);
         Debug.Log("Action");
         isDead = true;
-
+        navMeshAgent.enabled = false;
+       // enemyAnimator.SetTrigger("Death");
         enemyRigidbody.freezeRotation = false;
         enemyRigidbody.isKinematic = false;
-        enemyRigidbody.AddForce(Random.insideUnitSphere*200, ForceMode.Impulse);        
+        enemyRigidbody.AddForce(Random.insideUnitSphere * 400, ForceMode.Impulse);
         Destroy(observer.gameObject);
-        Destroy(navMeshAgent);
-        Destroy(this);        
+        Destroy(this);
 
     }
 }
