@@ -5,22 +5,29 @@ using UnityEngine;
 public class Tank : MonoBehaviour
 {
     [SerializeField] private Transform target;
-    [SerializeField] private Transform turrel;
+    [SerializeField] private Transform turrelStand;
+    [SerializeField] private Transform turrelBody;
     [SerializeField] private Transform bulletStartPos;
     [SerializeField] private Transform bulletContainer;
     [SerializeField] private Transform tankTover;
     [SerializeField] private Explosion engineExpl;
     [SerializeField] private Health tankHealth;
     [SerializeField] private int shootForce;
+    [SerializeField] private int shootDamage;
     [SerializeField] private Bullet bullet;
     private List<Bullet> bullets;
+    [SerializeField] private int tankAmmoCount;
     private bool isHaveTarget;
+    private bool isOnDelayShoot;
+    private bool isTargetVisible;
+    private bool isDead;
+
     private void Start()
     {
         tankHealth.deathEntity += TankExplosion;
 
         bullets = new List<Bullet>();
-        while (bullets.Count != 50)
+        while (bullets.Count != tankAmmoCount)
         {
             var bulletSample = Instantiate(bullet, bulletContainer.transform.position, Quaternion.identity);
             bulletSample.transform.parent = bulletContainer.transform;
@@ -28,28 +35,61 @@ public class Tank : MonoBehaviour
             bullets.Add(bulletSample);
         }
     }
+    private void Update()
+    {
+        if (isDead) return;
+
+        if (isHaveTarget)
+        {
+            TurrelLook();
+            TowerLook();
+            TargetVisibilityCheck();
+            if (isTargetVisible && !isOnDelayShoot)
+            {
+                TurrelShoot();
+            }
+        }
+    }
     private void TurrelLook()
-    {     
-        var bodyPos = target.position - turrel.position;
-        var bodyDir = Vector3.RotateTowards(turrel.forward, bodyPos, 0.5f * Time.deltaTime, 0.0f); 
-        turrel.rotation = Quaternion.LookRotation(bodyDir);
+    {
+        var standPos = new Vector3(target.position.x, turrelStand.position.y, target.position.z) - turrelStand.position;
+        var standDir = Vector3.RotateTowards(turrelStand.forward, standPos, 1f * Time.deltaTime, 0.0f);
+        turrelStand.rotation = Quaternion.LookRotation(standDir);
+
+        var bodypos = target.position - turrelBody.position;
+        var bodydir = Vector3.RotateTowards(turrelBody.forward, bodypos, 1f * Time.deltaTime, 0.0f);
+        turrelBody.rotation = Quaternion.LookRotation(bodydir);
+    }
+
+    private void TargetVisibilityCheck()
+    {
+        RaycastHit hit;
+        var rayCast = Physics.Raycast(bulletStartPos.position, bulletStartPos.forward, out hit, Mathf.Infinity, LayerMask.GetMask("Default"));
+
+        if (rayCast)
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                isTargetVisible = true;
+            }
+            else isTargetVisible = false;
+        }
     }
 
     private void TurrelShoot()
     {
-        if (isHaveTarget)
-        {
-            var bullet = bullets[0];
-            bullets.Remove(bullet);        
-            bullet.transform.position = bulletStartPos.transform.position;
-            bullet.transform.rotation = transform.rotation;
-            bullet.transform.parent = null;
-            bullet.gameObject.SetActive(true);
-            bullet.bulletRigidbody.AddForce(transform.forward * shootForce, ForceMode.Impulse);       
-            StartCoroutine(BulletLifeTime(bullet));
-            StartCoroutine(ShootDelay());
-        }
-        
+        isOnDelayShoot = true;
+        var bullet = bullets[0];
+        bullets.Remove(bullet);
+        bullet.transform.position = bulletStartPos.transform.position;
+        bullet.transform.rotation = turrelBody.rotation;
+        bullet.transform.parent = null;
+        bullet.BulletShoot(shootDamage);
+        bullet.gameObject.SetActive(true);
+        bullet.bulletRigidbody.velocity = Vector3.zero;
+        bullet.bulletRigidbody.AddForce(bullet.transform.forward * shootForce, ForceMode.Impulse);
+        StartCoroutine(BulletLifeTime(bullet));
+        StartCoroutine(ShootDelay());
     }
     private IEnumerator BulletLifeTime(Bullet b)
     {
@@ -63,33 +103,37 @@ public class Tank : MonoBehaviour
 
         yield break;
     }
-
     private IEnumerator ShootDelay()
     {
-        yield return new WaitForSeconds(1);
-        TurrelShoot();
+        yield return new WaitForSeconds(0.2f);
+        isOnDelayShoot = false;
         yield break;
     }
-
-
     private void TowerLook()
-    {
-        var pos = target.position - tankTover.position;
+    {       
+        var pos = new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position;
         var dir = Vector3.RotateTowards(tankTover.forward, pos, 0.2f * Time.deltaTime, 0.0f);
         tankTover.rotation = Quaternion.LookRotation(dir);
     }
-    private void OnTriggerStay(Collider other)
+    private void OnTriggerEnter(Collider col)
     {
-        if (other.CompareTag("Player"))
+        if (col.CompareTag("Player"))
         {
-            TurrelLook();
-            TowerLook();
-        }       
+            isHaveTarget = true;
+        }
+    }
+    private void OnTriggerExit(Collider col)
+    {
+        if (col.CompareTag("Player"))
+        {
+            isHaveTarget = false;
+        }
     }
 
     private void TankExplosion()
     {
         engineExpl.Boom();
         Destroy(engineExpl.gameObject);
+        isDead = true;
     }
 }

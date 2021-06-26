@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 632161552}
   - component: {fileID: 632161553}
   - component: {fileID: 632161554}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Observer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -900,6 +900,7 @@ MonoBehaviour:
   safePoints: []
   enemyAnimator: {fileID: 3651155939776610207}
   body: {fileID: 1593303254375222616}
+  shootDamage: 5
   shootForce: 10
   bulletCount: 20
   bullet: {fileID: 8672534744196658101, guid: d5be851299fd5324e8d4bd8c1c817d2a, type: 3}

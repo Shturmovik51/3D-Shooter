@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 438263712}
   - component: {fileID: 438263714}
   - component: {fileID: 438263713}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Carrier
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -907,6 +907,7 @@ GameObject:
   - component: {fileID: 3385423610002877387}
   - component: {fileID: 3385423610002877388}
   - component: {fileID: 1591249298}
+  - component: {fileID: 4513520218530902863}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -974,6 +975,7 @@ MonoBehaviour:
   bullet: {fileID: 8672534744196658101, guid: d5be851299fd5324e8d4bd8c1c817d2a, type: 3}
   bulletCount: 50
   shootForce: 10
+  shootDamage: 10
   bulletStartPos: {fileID: 2759790136407770012}
   bulletContainer: {fileID: 3385423610769347354}
   isWinner: 0
@@ -1007,7 +1009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c1a0326d54ae534bb8ed9e8a9b34aaa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisHealth: 2147483647
+  thisHealth: 100
 --- !u!95 &1591249298
 Animator:
   serializedVersion: 3
@@ -1021,12 +1023,26 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 488f9ace71cb33948afef20ad289c9e5, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!136 &4513520218530902863
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3385423610002877391}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3385423610176706855
 GameObject:
   m_ObjectHideFlags: 0

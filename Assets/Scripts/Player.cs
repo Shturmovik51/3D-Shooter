@@ -40,6 +40,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Bullet bullet;
     [SerializeField] private int bulletCount;
     [SerializeField] private int shootForce;
+    [SerializeField] private int shootDamage;
     [SerializeField] private GameObject bulletStartPos;
     [SerializeField] private GameObject bulletContainer;
     private List<Bullet> bullets;
@@ -194,6 +195,7 @@ public class Player : MonoBehaviour
         bullet.transform.position = bulletStartPos.transform.position;
         bullet.transform.rotation = rightArm.rotation;
         bullet.transform.parent = null;
+        bullet.BulletShoot(shootDamage);
         bullet.gameObject.SetActive(true);
         bullet.bulletRigidbody.velocity = Vector3.zero;
         bullet.bulletRigidbody.AddForce(rightArm.forward*shootForce, ForceMode.Impulse);

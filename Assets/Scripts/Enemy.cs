@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
     private Transform target;
     public Transform Target { get { return target; } set { target = value; } }
     private float rotationSpeed = 2f;
-
+    [SerializeField] private int shootDamage;
     [SerializeField] private int shootForce;
     [SerializeField] private int bulletCount;
     [SerializeField] private Bullet bullet;
@@ -29,12 +29,8 @@ public class Enemy : MonoBehaviour
     private List<Bullet> bullets;
     private bool isShooting;
     private bool isOnReloading;
+    private bool isTargetVisible;
     public bool isDead;
-    private Vector3 oldPos;
-    private Vector3 newPos;
-    private float enemyVelosity;
-
-
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -71,7 +67,11 @@ public class Enemy : MonoBehaviour
 
         if (isShooting == true && !isOnReloading)
         {
-            StartCoroutine(Shoot());
+            TargetVisibilityCheck();
+            if (isTargetVisible)
+            {
+                StartCoroutine(Shoot());
+            }
         }
     }
     public void WPinitialyser(List<Transform> patrol, List<Transform> safe)
@@ -91,6 +91,7 @@ public class Enemy : MonoBehaviour
 
         var bodyDir = Vector3.RotateTowards(body.forward, transform.forward, rotationSpeed * Time.deltaTime, 0.0f);
         body.rotation = Quaternion.LookRotation(bodyDir);
+        rightArm.rotation = Quaternion.LookRotation(bodyDir);
 
         if (navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
         {
@@ -135,10 +136,28 @@ public class Enemy : MonoBehaviour
     private void Alarm()
     {
         var bodyPos = new Vector3(target.position.x, body.position.y, target.position.z) - body.position;
-        // var bodyPos = new Vector3(target.position.x - body.position.x, 0f, target.position.z - body.position.z);
-        var bodyDir = Vector3.RotateTowards(body.forward, bodyPos + Vector3.right * 1.5f, rotationSpeed * Time.deltaTime, 0.0f);
+        var bodyDir = Vector3.RotateTowards(body.forward, bodyPos, rotationSpeed * Time.deltaTime, 0.0f);
         body.rotation = Quaternion.LookRotation(bodyDir);
+
+        var rArmPos = new Vector3(target.position.x, rightArm.position.y, target.position.z) - rightArm.position;
+        var rArmDir = Vector3.RotateTowards(body.forward, rArmPos, rotationSpeed * Time.deltaTime, 0.0f);
+        body.rotation = Quaternion.LookRotation(rArmDir);
         isShooting = true;
+    }
+
+    private void TargetVisibilityCheck()
+    {
+        RaycastHit hit;       
+        var rayCast = Physics.Raycast(bulletStartPos.position, bulletStartPos.forward, out hit, Mathf.Infinity, LayerMask.GetMask("Default"));
+       
+        if (rayCast)
+        {
+            if (hit.collider.CompareTag("Player"))
+            {
+                isTargetVisible = true;
+            }
+            else isTargetVisible = false;
+        }
     }
 
     private IEnumerator Shoot()
@@ -149,6 +168,7 @@ public class Enemy : MonoBehaviour
         bullet.transform.position = bulletStartPos.transform.position;
         bullet.transform.rotation = rightArm.rotation;
         bullet.transform.parent = null;
+        bullet.BulletShoot(shootDamage);
         bullet.gameObject.SetActive(true);
         bullet.bulletRigidbody.velocity = Vector3.zero;
         bullet.bulletRigidbody.AddForce(rightArm.forward * shootForce, ForceMode.Impulse);
@@ -156,7 +176,6 @@ public class Enemy : MonoBehaviour
         StartCoroutine(BulletLifeTime(bullet));        
         yield return new WaitForSeconds(1);
         isOnReloading = false;
-        //enemyAnimator.ResetTrigger("Shoot");
 
         yield break;
     }
@@ -180,7 +199,6 @@ public class Enemy : MonoBehaviour
         Debug.Log("Action");
         isDead = true;
         navMeshAgent.enabled = false;
-       // enemyAnimator.SetTrigger("Death");
         enemyRigidbody.freezeRotation = false;
         enemyRigidbody.isKinematic = false;
         enemyRigidbody.AddForce(Random.insideUnitSphere * 400, ForceMode.Impulse);

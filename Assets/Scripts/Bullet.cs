@@ -11,14 +11,19 @@ public class Bullet : MonoBehaviour
     {
         SoundManager.instance.shoot.Play();
     }
-
+    public void BulletShoot(int damage)
+    {
+        bulletDamage = damage;
+    }
     private void OnCollisionEnter(Collision col)
     {
         if (GameManager.instance.healthContainer.ContainsKey(col.gameObject))
         {
             Health health = GameManager.instance.healthContainer[col.gameObject];
             health.TakeDamage(bulletDamage);
-        }        
+        }
+        bulletDamage = 0;
     }
+
 
 }
