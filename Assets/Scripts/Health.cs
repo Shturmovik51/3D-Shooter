@@ -20,7 +20,7 @@ public class Health : MonoBehaviour
         if(thisHealth <= 0f)
         {
             GameManager.instance.healthContainer.Remove(gameObject);
-            deathEntity();
+            deathEntity?.Invoke();
             Destroy(this);
         }
 

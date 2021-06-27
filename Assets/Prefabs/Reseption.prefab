@@ -236,7 +236,6 @@ GameObject:
   - component: {fileID: 1462384062104199979}
   - component: {fileID: 7937251056482402741}
   - component: {fileID: 2110616415928529483}
-  - component: {fileID: 8703128302496315472}
   m_Layer: 3
   m_Name: Cube (9)
   m_TagString: Untagged
@@ -320,22 +319,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &8703128302496315472
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4115881621941085175}
-  serializedVersion: 2
-  m_Mass: 75
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 3
 --- !u!1 &4233698885758226190
 GameObject:
   m_ObjectHideFlags: 0
@@ -348,7 +331,6 @@ GameObject:
   - component: {fileID: 2640483956115470286}
   - component: {fileID: 6243281401946581560}
   - component: {fileID: 5792244655457959190}
-  - component: {fileID: 2762297106753576333}
   m_Layer: 3
   m_Name: Cube (13)
   m_TagString: Untagged
@@ -432,22 +414,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &2762297106753576333
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4233698885758226190}
-  serializedVersion: 2
-  m_Mass: 75
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 3
 --- !u!1 &4551708786094744426
 GameObject:
   m_ObjectHideFlags: 0
@@ -684,7 +650,6 @@ GameObject:
   - component: {fileID: 6769876743522586564}
   - component: {fileID: 4011697595433348178}
   - component: {fileID: 926115620794744496}
-  - component: {fileID: 4817756529436138876}
   m_Layer: 3
   m_Name: Cube (11)
   m_TagString: Untagged
@@ -768,22 +733,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &4817756529436138876
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7229519423528856793}
-  serializedVersion: 2
-  m_Mass: 75
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 3
 --- !u!1 &7264574039982953694
 GameObject:
   m_ObjectHideFlags: 0
@@ -796,7 +745,6 @@ GameObject:
   - component: {fileID: 1629403403236702314}
   - component: {fileID: 6148971536878967417}
   - component: {fileID: 5596473342574195757}
-  - component: {fileID: 8284144527866140411}
   m_Layer: 3
   m_Name: Cube (10)
   m_TagString: Untagged
@@ -880,22 +828,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &8284144527866140411
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7264574039982953694}
-  serializedVersion: 2
-  m_Mass: 75
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 3
 --- !u!1 &7336606999571509726
 GameObject:
   m_ObjectHideFlags: 0
@@ -908,7 +840,6 @@ GameObject:
   - component: {fileID: 4703763710889754011}
   - component: {fileID: 3359125028075199010}
   - component: {fileID: 2212904176989302519}
-  - component: {fileID: 89836844050397933}
   m_Layer: 3
   m_Name: Cube (12)
   m_TagString: Untagged
@@ -992,22 +923,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &89836844050397933
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7336606999571509726}
-  serializedVersion: 2
-  m_Mass: 75
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 3
 --- !u!1 &7627777699843593878
 GameObject:
   m_ObjectHideFlags: 0

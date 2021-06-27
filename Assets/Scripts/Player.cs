@@ -47,12 +47,15 @@ public class Player : MonoBehaviour
 
     private bool isShooting;
     private bool isOnReloading;
+    public bool isDead;
+    public bool isOnPause;
     public bool isWinner = false;
 
     private float xRotation = 0f;
     private void Awake()
     {
         instance = this;
+        playerHealth.deathEntity += PlayerDeath;
     }
     private void Start()
     {
@@ -68,14 +71,11 @@ public class Player : MonoBehaviour
             bullets.Add(bulletSample);
         }
 
-        BombCountFiller();
-
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        BombCountFiller();        
     }
     void Update()
     {
-        if (isWinner) return;
+        if (isWinner || isDead || isOnPause) return;        
 
         PlayerMovement();
         PlayerLook();
@@ -97,7 +97,6 @@ public class Player : MonoBehaviour
 
         ScopeRay();
     }
-        
     private void PlayerMovement()
     {       
         float x = Input.GetAxis("Horizontal");
@@ -219,6 +218,16 @@ public class Player : MonoBehaviour
         b.gameObject.SetActive(false);
 
         yield break;
+    }
+
+    private void PlayerDeath()
+    {
+        Destroy(charControl);
+        var collider = GetComponent<CapsuleCollider>();
+        collider.enabled = false;
+        playerAnimator.SetTrigger("Death");
+        UIController.instanse.LoseGame();
+        isDead = true;
     }
     
 }

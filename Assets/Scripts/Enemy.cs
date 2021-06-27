@@ -202,6 +202,7 @@ public class Enemy : MonoBehaviour
         enemyRigidbody.freezeRotation = false;
         enemyRigidbody.isKinematic = false;
         enemyRigidbody.AddForce(Random.insideUnitSphere * 400, ForceMode.Impulse);
+        UIController.instanse.enemyKillsCount++;
         Destroy(observer.gameObject);
         Destroy(this);
 
