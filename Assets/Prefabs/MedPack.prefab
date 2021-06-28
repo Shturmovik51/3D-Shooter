@@ -386,7 +386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86ad2809ed8bbbe4696d5753f8899684, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bonusHealth: 10
+  bonusHealth: 50
 --- !u!1 &719629325021264034
 GameObject:
   m_ObjectHideFlags: 0

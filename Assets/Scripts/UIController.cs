@@ -21,6 +21,8 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button pauseContinueBtn;
     [SerializeField] private Button pauseQuiteBtn;
     [SerializeField] private Button pauseMainMenuBtn;
+    [SerializeField] private Text enemyKillsCountTxt;
+    [SerializeField] private Text summary;
     public int enemyKillsCount = 0;
 
     private void Awake()
@@ -31,8 +33,10 @@ public class UIController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && Time.timeScale != 0)
             OnEnterPause();
+
+        enemyKillsCountTxt.text = enemyKillsCount.ToString();
     }
     private void FixedUpdate()
     {
@@ -71,6 +75,12 @@ public class UIController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         losePanel.SetActive(true);
+        if (enemyKillsCount < 4)
+            summary.text = $"Вы не оправдали\n наши надежды";
+        else if(enemyKillsCount >= 4 && enemyKillsCount < 8)
+            summary.text = $"А ты был хорош\n но недостаточно";
+        else if (enemyKillsCount >= 8)
+            summary.text = $"На родине тебе\n поставят паметник";
     }
     private void OnClickMainMenyBtn()
     {
