@@ -7,6 +7,8 @@ public class Barrel : MonoBehaviour
     [SerializeField] private Explosion barrelExpl;
     [SerializeField] private Health barrelHealth;
     [SerializeField] private GameObject firePS;
+    [SerializeField] private GameObject barrelVFXExpl;
+    [SerializeField] private GameObject barrelBody;
 
     private void Start()
     {
@@ -23,6 +25,10 @@ public class Barrel : MonoBehaviour
         firePS.SetActive(true);
         yield return new WaitForSeconds(2);
         barrelExpl.Boom();
+        barrelVFXExpl.SetActive(true);
+        barrelVFXExpl.transform.parent = null;
+        Destroy(barrelBody);
+        yield return new WaitForSeconds(10);
         Destroy(gameObject);
     }
 }
