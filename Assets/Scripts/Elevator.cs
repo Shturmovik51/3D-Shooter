@@ -12,41 +12,35 @@ public class Elevator : MonoBehaviour
     [SerializeField] private ElectricalPanel ElPanelRight;
     [SerializeField] private Transform leftD;
     [SerializeField] private Transform rightD;
+    [SerializeField] private Boss boss;
     public bool isPressedButton;
-    public bool isNeedOpen;
-    public bool isNeedClose;
-    public bool isAlarm;
+    public bool isDoorClosed;
+    public bool isUp;
 
     private void Start()
     {
-        isNeedOpen = true;
-        isAlarm = true;
+        isDoorClosed = true;
     }
 
     void FixedUpdate()
     {
-        if (isPressedButton)
+        if (isUp)
         {
             ElevatorUp();
         }
 
-        if (ElPanelRight.isDestroyed == true)
-        {
-            isAlarm = false;
-        }
-
-        if (isNeedOpen && isAlarm == false && ElPanelLeft.isDestroyed == true)
+        if (isDoorClosed && !isUp && ElPanelRight.isDestroyed == true && ElPanelLeft.isDestroyed == true)
         {
             OpenDoors();
         }
 
-        if(isNeedClose == true)
+        if(!isDoorClosed && isPressedButton)
         {
             CloseDoors();
         }
     }
     private void ElevatorUp()
-    {
+    {        
         if (transform.position.y < 160)
         {
             transform.Translate(Vector3.up * elevatorSpeed * Time.fixedDeltaTime);
@@ -55,8 +49,9 @@ public class Elevator : MonoBehaviour
         else
         {
             isPressedButton = false;
-            isNeedOpen = true;
+            isDoorClosed = true;
             player.transform.parent = null;
+            isUp = false;
         }
     }
 
@@ -69,7 +64,7 @@ public class Elevator : MonoBehaviour
         }
         else
         {
-            isNeedOpen = false;
+            isDoorClosed = false;
         }       
     }
     private void CloseDoors()
@@ -81,8 +76,10 @@ public class Elevator : MonoBehaviour
         }
         else
         {
-            isNeedClose = false;
+            isDoorClosed = true;
             isPressedButton = true;
+            isUp = true;
+            boss.FirstActivateBoss();
         }
     }
 

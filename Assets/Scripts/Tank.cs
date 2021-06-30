@@ -33,7 +33,7 @@ public class Tank : MonoBehaviour
             bulletSample.transform.parent = bulletContainer.transform;
             bullet.gameObject.SetActive(false);
             bullets.Add(bulletSample);
-        }
+        }        
     }
     private void Update()
     {

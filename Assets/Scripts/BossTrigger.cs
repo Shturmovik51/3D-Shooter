@@ -9,6 +9,6 @@ public class BossTrigger : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.CompareTag("Player"))
-            boss.isBossAlarm = true;
+            boss.SecondActivateBoss();
     }
 }

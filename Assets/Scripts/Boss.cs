@@ -10,6 +10,7 @@ public class Boss : MonoBehaviour
     [SerializeField] private List<Transform> forWardPoss;
     [SerializeField] private List<Transform> backWardPoss;
     [SerializeField] private List<Transform> attakPoints;
+    [SerializeField] private Transform firstMeetPos;
     [SerializeField] private Transform missilePos;
     [SerializeField] private Transform bodyTR;
     [SerializeField] private float rotationSpeed;
@@ -17,28 +18,28 @@ public class Boss : MonoBehaviour
     [SerializeField] private int changePosSpeed;
     [SerializeField] private Missile missile;
     [SerializeField] private Explosion bossExpl;
+    [SerializeField] private AudioSource engineSound;
+    [SerializeField] private int countOfShoots;
+
     private Transform target;
 
     private bool isForWardSide = false;
     private bool isReloading = false;
     private bool isOnPosition = false;
     private bool isDead = false;
-    public bool isBossAlarm;
-    
+    public bool isFirstMeet = false;
+
     private Vector3 movePos;
 
     private void Start()
     {
-        bossHealth.deathEntity += BossDeath;
-        StartCoroutine(BossLogic());
+        bossHealth.deathEntity += BossDeath;        
         target = Player.instance.transform;
     }
 
     private void Update()
     {
-        if (!isBossAlarm) return;
-
-        mainPropeller.Rotate(Vector3.up, 4200*Time.deltaTime);
+        mainPropeller.Rotate(Vector3.up, 4200 * Time.deltaTime);
         backPropeller.Rotate(Vector3.up, 4200 * Time.deltaTime);
 
         if (isDead) return;
@@ -48,7 +49,10 @@ public class Boss : MonoBehaviour
 
         isOnPosition = ((movePos - transform.position).magnitude < 40) ? true : false;
 
-        if (isOnPosition && !isReloading)
+        if (isOnPosition && isFirstMeet)
+            gameObject.SetActive(false);
+
+        if (isOnPosition && !isReloading && !isFirstMeet)
             StartCoroutine(BossShoot());
 
     }
@@ -64,6 +68,21 @@ public class Boss : MonoBehaviour
         var bodyPos = target.position - transform.position;
         var bodyDir = Vector3.RotateTowards(bodyTR.forward, bodyPos, rotationSpeed * Time.deltaTime, 0.0f);
         bodyTR.rotation = Quaternion.LookRotation(bodyDir);
+    }
+
+    public void FirstActivateBoss()
+    {
+        movePos = firstMeetPos.position;
+        isFirstMeet = true;
+        gameObject.SetActive(true);
+        engineSound.Play();
+    }
+    public void SecondActivateBoss()
+    {
+        isFirstMeet = false;
+        gameObject.SetActive(true);
+        StartCoroutine(BossLogic());
+        engineSound.Play();
     }
 
     private IEnumerator BossLogic()
@@ -86,23 +105,24 @@ public class Boss : MonoBehaviour
         isReloading = true;
 
         List<Transform> points = new List<Transform>();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < countOfShoots; i++)
         {
             var point = attakPoints[Random.Range(0, attakPoints.Count)];
             point.gameObject.SetActive(true);
             points.Add(point);
         }        
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
 
         foreach (var point in points)
         {
             var currentMisile = Instantiate(missile);
             currentMisile.InitMissile(point, missilePos);
             point.gameObject.SetActive(false);
+            yield return new WaitForSeconds(0.2f);
         }
 
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(2);
         isReloading = false;
     }
     private void BossDeath()

@@ -7,7 +7,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
 
     public AudioSource shoot;
-    public AudioSource Shoot { get; set; }
+    public AudioSource helicopterEng;
 
     private void Awake()
     {

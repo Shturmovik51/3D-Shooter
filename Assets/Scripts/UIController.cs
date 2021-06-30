@@ -28,6 +28,15 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         instanse = this;
+        winQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
+        winRestBtn.onClick.AddListener(OnClickRestartBtn);
+        winMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
+        deathQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
+        deathRestBtn.onClick.AddListener(OnClickRestartBtn);
+        deathMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
+        pauseContinueBtn.onClick.AddListener(OnExitPause);
+        pauseMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
+        pauseQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -42,15 +51,6 @@ public class UIController : MonoBehaviour
     {
         healthCount.text = Player.instance.PlayerHealth.ThisHealth.ToString();
         ammoCount.text = Player.instance.AmmoCount.ToString();
-        winQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
-        winRestBtn.onClick.AddListener(OnClickRestartBtn);
-        winMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
-        deathQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
-        deathRestBtn.onClick.AddListener(OnClickRestartBtn);
-        deathMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
-        pauseContinueBtn.onClick.AddListener(OnExitPause);
-        pauseMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
-        pauseQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
     }
 
     public void WinGame()

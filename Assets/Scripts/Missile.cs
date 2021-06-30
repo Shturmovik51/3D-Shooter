@@ -8,6 +8,8 @@ public class Missile : MonoBehaviour
     [SerializeField] private Rigidbody missileRGB;
     [SerializeField] private float shootForce;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private GameObject missileBody;
+    [SerializeField] private GameObject missileVFXExplosion;
     private Transform targetPos;
 
     private void Update()
@@ -19,8 +21,10 @@ public class Missile : MonoBehaviour
     private void OnTriggerEnter(Collider col)
     {
         if(col.gameObject.CompareTag("Ground") || col.gameObject.CompareTag("Player"))
-        {
+        {          
             missileExpl.Boom();
+            Destroy(missileBody);
+            StartCoroutine(ExplosionVFXDuration());
         }
     }
 
@@ -43,4 +47,12 @@ public class Missile : MonoBehaviour
     {
         missileRGB.AddForce(transform.forward*shootForce, ForceMode.Force);
     } 
+    private IEnumerator ExplosionVFXDuration()
+    {
+        missileVFXExplosion.SetActive(true);
+        missileVFXExplosion.transform.parent = null;
+        yield return new WaitForSeconds(6);
+        Destroy(missileVFXExplosion);
+        Destroy(gameObject);
+    }
 }
