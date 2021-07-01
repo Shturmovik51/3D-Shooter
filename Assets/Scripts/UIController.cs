@@ -70,6 +70,8 @@ public class UIController : MonoBehaviour
     {
         yield return new WaitForSeconds(5);
         Time.timeScale = 0;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         winPanel.SetActive(true);
     }
 

@@ -64953,6 +64953,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1515423644}
     - target: {fileID: 3338531148694620019, guid: 8fa1f82955a95d843bdc21c351af9970, type: 3}
+      propertyPath: helicopterExplsound
+      value: 
+      objectReference: {fileID: 3338531149469920064}
+    - target: {fileID: 3338531148694620019, guid: 8fa1f82955a95d843bdc21c351af9970, type: 3}
       propertyPath: attakPoints.Array.data[0]
       value: 
       objectReference: {fileID: 1666126557}
@@ -65078,6 +65082,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8fa1f82955a95d843bdc21c351af9970, type: 3}
+--- !u!82 &3338531149469920064 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 365736574, guid: 8fa1f82955a95d843bdc21c351af9970, type: 3}
+  m_PrefabInstance: {fileID: 3338531149469920063}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3385423611101054471
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -195,7 +195,6 @@ public class Enemy : MonoBehaviour
     {
 
         enemyAnimator.SetBool("IsWalking", false);
-        Debug.Log("Action");
         isDead = true;
         navMeshAgent.enabled = false;
         enemyRigidbody.freezeRotation = false;
