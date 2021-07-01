@@ -9,6 +9,7 @@ public class Barrel : MonoBehaviour
     [SerializeField] private GameObject firePS;
     [SerializeField] private GameObject barrelVFXExpl;
     [SerializeField] private GameObject barrelBody;
+    [SerializeField] private AudioSource barrelSound;
 
     private void Start()
     {
@@ -24,11 +25,13 @@ public class Barrel : MonoBehaviour
     {
         firePS.SetActive(true);
         yield return new WaitForSeconds(2);
+        barrelSound.Play();
         barrelExpl.Boom();
         barrelVFXExpl.SetActive(true);
         barrelVFXExpl.transform.parent = null;
         Destroy(barrelBody);
         yield return new WaitForSeconds(10);
+        Destroy(barrelVFXExpl);
         Destroy(gameObject);
     }
 }

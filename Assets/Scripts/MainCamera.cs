@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class MainCamera : MonoBehaviour
 {
-    [SerializeField] private Transform cameraPos;
-    [SerializeField] private Transform playerHead;
+    private Transform cameraPos;
+    private Transform playerHead;
+
+    private void Start()
+    {
+        cameraPos = Player.instance.cameraPos;
+        playerHead = Player.instance.head;
+    }
 
     private void Update()
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Elevator : MonoBehaviour
 {
-    [SerializeField] private Player player;
+    //[SerializeField] private Player player;
     [SerializeField] private int elevatorSpeed;
     [SerializeField] private int openDoorSpeed;
     [SerializeField] private ElectricalPanel ElPanelLeft;
@@ -44,13 +44,13 @@ public class Elevator : MonoBehaviour
         if (transform.position.y < 160)
         {
             transform.Translate(Vector3.up * elevatorSpeed * Time.fixedDeltaTime);
-            player.transform.parent = transform;
+            //player.transform.parent = transform;
         }
         else
         {
             isPressedButton = false;
             isDoorClosed = true;
-            player.transform.parent = null;
+           // player.transform.parent = null;
             isUp = false;
         }
     }

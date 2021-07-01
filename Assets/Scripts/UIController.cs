@@ -18,11 +18,14 @@ public class UIController : MonoBehaviour
     [SerializeField] private Button deathRestBtn;
     [SerializeField] private Button deathQuiteBtn;
     [SerializeField] private Button deathMainMenuBtn;
+    [SerializeField] private Button deathRessbtn;
     [SerializeField] private Button pauseContinueBtn;
     [SerializeField] private Button pauseQuiteBtn;
     [SerializeField] private Button pauseMainMenuBtn;
     [SerializeField] private Text enemyKillsCountTxt;
     [SerializeField] private Text summary;
+    [SerializeField] private Slider musicSlider;
+
     public int enemyKillsCount = 0;
 
     private void Awake()
@@ -34,11 +37,17 @@ public class UIController : MonoBehaviour
         deathQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
         deathRestBtn.onClick.AddListener(OnClickRestartBtn);
         deathMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
+        deathRessbtn.onClick.AddListener(OnClickRessurectBtn);
         pauseContinueBtn.onClick.AddListener(OnExitPause);
         pauseMainMenuBtn.onClick.AddListener(OnClickMainMenyBtn);
         pauseQuiteBtn.onClick.AddListener(OnClickQuiteBtn);
+        musicSlider.onValueChanged.AddListener(MusicSliderValue);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+    private void Start()
+    {
+        musicSlider.value = BackGroundSound.instance.musicAudioSource.volume;
     }
     private void Update()
     {
@@ -114,4 +123,16 @@ public class UIController : MonoBehaviour
         Player.instance.isOnPause = false;
     }
 
+    private void OnClickRessurectBtn()
+    {
+        foreach (var point in GameManager.instance.savepoints)
+        {
+            if (point.isActive)
+                point.Ressurect();
+        }
+    }
+    private void MusicSliderValue(float value)
+    {
+        BackGroundSound.instance.musicAudioSource.volume = value;
+    } 
 }

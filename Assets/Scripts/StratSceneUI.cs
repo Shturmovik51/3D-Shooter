@@ -13,17 +13,24 @@ public class StratSceneUI : MonoBehaviour
     [SerializeField] private Transform rightPos;
     [SerializeField] private Transform upPos;
     [SerializeField] private Transform downPos;
+    [SerializeField] private Slider musicSlider;
+    //[SerializeField] private AudioSource musicAudioSource;
 
     private void Awake()
     {       
         startBtn.onClick.AddListener(OnClickStartBtn);
         quiteBtn.onClick.AddListener(OnClickQuiteBtn);
+        musicSlider.onValueChanged.AddListener(MusicVolume);
     }
+    private void Start()
+    {
+        musicSlider.value = BackGroundSound.instance.musicAudioSource.volume;
+    }
+
     private void Update()
     {
         float x = Input.GetAxis("Mouse X");
         float z = Input.GetAxis("Mouse Y");
-        Debug.Log(x);
 
         if(x < 0)
         {
@@ -54,5 +61,10 @@ public class StratSceneUI : MonoBehaviour
     private void OnClickQuiteBtn()
     {
         Application.Quit();
+    }
+
+    private void MusicVolume(float value)
+    {
+        BackGroundSound.instance.musicAudioSource.volume = value;
     }
 }

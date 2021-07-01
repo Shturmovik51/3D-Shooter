@@ -10,12 +10,21 @@ public class Missile : MonoBehaviour
     [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject missileBody;
     [SerializeField] private GameObject missileVFXExplosion;
+    [SerializeField] private AudioSource missileExplAudio;
+    [SerializeField] private AudioSource missileShootAudio;
+
     private Transform targetPos;
+       
 
     private void Update()
     {
         MissileFly();
         MissileRotation();
+        //missileRGB.isKinematic = true;
+    }
+    private void OnEnable()
+    {
+        missileShootAudio.Play();
     }
 
     private void OnTriggerEnter(Collider col)
@@ -27,6 +36,8 @@ public class Missile : MonoBehaviour
             StartCoroutine(ExplosionVFXDuration());
         }
     }
+
+    
 
     public void InitMissile(Transform target, Transform pos)
     {
@@ -45,10 +56,11 @@ public class Missile : MonoBehaviour
 
     private void MissileFly()
     {
-        missileRGB.AddForce(transform.forward*shootForce, ForceMode.Force);
+        missileRGB.AddForce(transform.forward*shootForce*Time.deltaTime, ForceMode.Force);
     } 
     private IEnumerator ExplosionVFXDuration()
     {
+        missileExplAudio.Play();
         missileVFXExplosion.SetActive(true);
         missileVFXExplosion.transform.parent = null;
         yield return new WaitForSeconds(6);

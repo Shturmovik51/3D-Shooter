@@ -6,10 +6,10 @@ public class Bullet : MonoBehaviour
 {
     public Rigidbody bulletRigidbody;
     [SerializeField] private int bulletDamage;
-    //public Rigidbody BulletRigidbody { get; set; }
+    [SerializeField] private AudioSource shoot;
     private void OnEnable()
     {
-        SoundManager.instance.shoot.Play();
+        shoot.Play();
     }
     public void BulletShoot(int damage)
     {

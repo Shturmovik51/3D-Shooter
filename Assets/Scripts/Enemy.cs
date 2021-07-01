@@ -114,7 +114,6 @@ public class Enemy : MonoBehaviour
             currentSafePoint = safePoints[Random.Range(0, safePoints.Count)];
         }
         navMeshAgent.SetDestination(currentSafePoint.position);
-        Debug.Log("Alarm!");
 
         //for (int i = 0; i < safePoints.Length; i++)
         //{           
