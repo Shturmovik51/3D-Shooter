@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public LayerMask groundMask;
     public bool isGrounded;
     private int playerVelosity;
+    private int maxHealth;
     private Vector3 oldPos;
     private Vector3 newPos;
     [SerializeField] private int jumpForse;
@@ -26,7 +27,9 @@ public class Player : MonoBehaviour
     [SerializeField] private int playerSpeed;
     [SerializeField] private int shiftedSpeed;
     [SerializeField] private int sensitivity;
-    [SerializeField] private Transform head;
+    public AudioListener listener;
+    public Transform head;
+    public Transform cameraPos;
     [SerializeField] private Transform rightArm;
     [SerializeField] private Transform scope;
 
@@ -47,6 +50,7 @@ public class Player : MonoBehaviour
 
     private bool isShooting;
     private bool isOnReloading;
+    public bool isImmortal;
     public bool isDead;
     public bool isOnPause;
     public bool isWinner = false;
@@ -59,8 +63,7 @@ public class Player : MonoBehaviour
     }
     private void Start()
     {
-        //newPos = oldPos = transform.position;
-
+        maxHealth = playerHealth.ThisHealth;
         isGrounded = false;
         bullets = new List<Bullet>();
         while (bullets.Count != bulletCount)
@@ -81,21 +84,19 @@ public class Player : MonoBehaviour
         PlayerLook();
                 
         if (Input.GetKey(KeyCode.Mouse0) && ammoCount > 0)
-        {
             isShooting = true;
-        }
+       
 
         if (Input.GetKeyDown(KeyCode.Mouse1) && !isBombReload)
-        {
             BombThrow();
-        }       
+       
 
         if (isShooting == true && !isOnReloading)
-        {
             StartCoroutine(Shoot());
-        }
+      
 
-        ScopeRay();
+        if (isImmortal)
+            playerHealth.ThisHealth = maxHealth;        
     }
     private void PlayerMovement()
     {       
@@ -152,12 +153,7 @@ public class Player : MonoBehaviour
         head.localRotation = Quaternion.Euler(xRotation, 0, 0);
 
         rightArm.localRotation = head.localRotation;
-    }
-    private void ScopeRay()
-    {
-       // Ray ray = new Ray(scope.position, transform.forward);
-       // Debug.DrawRay(scope.position, scope.forward * 20, Color.red);
-    }
+    }    
 
     private void BombCountFiller()
     {
@@ -209,7 +205,7 @@ public class Player : MonoBehaviour
     }   
     private IEnumerator BulletLifeTime(Bullet b)
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(6);
         bullets.Add(b);
         b.transform.position = bulletContainer.transform.position;
         b.transform.parent = bulletContainer.transform;
@@ -222,12 +218,18 @@ public class Player : MonoBehaviour
 
     private void PlayerDeath()
     {
+        gameObject.tag = "Dead";
         Destroy(charControl);
         var collider = GetComponent<CapsuleCollider>();
         collider.enabled = false;
         playerAnimator.SetTrigger("Death");
         UIController.instanse.LoseGame();
         isDead = true;
+    }
+
+    private void DestroyPlayer()
+    {
+        Destroy(gameObject);
     }
     
 }

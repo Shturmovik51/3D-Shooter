@@ -26,13 +26,13 @@ public class QualitySettingsMenu : MonoBehaviour
 	void Awake()
 	{
 		PlayerPrefs.DeleteAll();
-		//resolutionsList = Screen.resolutions;
-		//qualityNamesList = QualitySettings.names;
-		//shadowQualityList = System.Enum.GetNames(typeof(ShadowQuality));
-		//shadowResolutionList = System.Enum.GetNames(typeof(ShadowResolution));
-		//Load();
-		//BuildMenu();
-	}
+        resolutionsList = Screen.resolutions;
+        qualityNamesList = QualitySettings.names;
+        shadowQualityList = System.Enum.GetNames(typeof(ShadowQuality));
+        shadowResolutionList = System.Enum.GetNames(typeof(ShadowResolution));
+        Load();
+        BuildMenu();
+    }
 
 	void Load()
 	{

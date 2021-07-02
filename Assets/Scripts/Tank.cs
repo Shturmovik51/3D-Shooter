@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Tank : MonoBehaviour
 {
-    [SerializeField] private Transform target;
     [SerializeField] private Transform turrelStand;
     [SerializeField] private Transform turrelBody;
     [SerializeField] private Transform bulletStartPos;
@@ -15,9 +14,12 @@ public class Tank : MonoBehaviour
     [SerializeField] private int shootForce;
     [SerializeField] private int shootDamage;
     [SerializeField] private Bullet bullet;
-    private List<Bullet> bullets;
     [SerializeField] private int tankAmmoCount;
-    private bool isHaveTarget;
+    [SerializeField] private GameObject tankWFXExpl;
+    [SerializeField] private AudioSource tankExplSound;
+
+    private Transform target;
+    private List<Bullet> bullets;
     private bool isOnDelayShoot;
     private bool isTargetVisible;
     private bool isDead;
@@ -39,7 +41,7 @@ public class Tank : MonoBehaviour
     {
         if (isDead) return;
 
-        if (isHaveTarget)
+        if (target != null)
         {
             TurrelLook();
             TowerLook();
@@ -117,22 +119,20 @@ public class Tank : MonoBehaviour
     }
     private void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag("Player"))
-        {
-            isHaveTarget = true;
-        }
+        if (col.CompareTag("Player"))        
+            target = col.transform;        
     }
     private void OnTriggerExit(Collider col)
     {
-        if (col.CompareTag("Player"))
-        {
-            isHaveTarget = false;
-        }
+        if (col.CompareTag("Player"))       
+            target = null;
     }
 
     private void TankExplosion()
     {
         engineExpl.Boom();
+        tankExplSound.Play();
+        tankWFXExpl.SetActive(true);
         Destroy(engineExpl.gameObject);
         isDead = true;
     }

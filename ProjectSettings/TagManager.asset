@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Enemy
   - Barrel
+  - Dead
   layers:
   - Default
   - TransparentFX

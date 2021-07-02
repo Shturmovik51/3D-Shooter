@@ -114,7 +114,6 @@ public class Enemy : MonoBehaviour
             currentSafePoint = safePoints[Random.Range(0, safePoints.Count)];
         }
         navMeshAgent.SetDestination(currentSafePoint.position);
-        Debug.Log("Alarm!");
 
         //for (int i = 0; i < safePoints.Length; i++)
         //{           
@@ -196,7 +195,6 @@ public class Enemy : MonoBehaviour
     {
 
         enemyAnimator.SetBool("IsWalking", false);
-        Debug.Log("Action");
         isDead = true;
         navMeshAgent.enabled = false;
         enemyRigidbody.freezeRotation = false;

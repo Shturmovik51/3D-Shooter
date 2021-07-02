@@ -6,6 +6,9 @@ public class Bomb : MonoBehaviour
 {
     [SerializeField] private Rigidbody bombRigidbody;
     [SerializeField] private Explosion bombExplosion;
+    [SerializeField] private GameObject bombBody;
+    [SerializeField] private GameObject bombWFXExpl;
+    [SerializeField] private AudioSource bombSound;
     private Transform bombIdleParent;    
 
     public void Throw(Bomb bomb, int forse, Transform parent)
@@ -19,8 +22,14 @@ public class Bomb : MonoBehaviour
     }
     private IEnumerator BombLifeTime(Bomb b)
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(4);
+        bombWFXExpl.transform.parent = null;
+        bombWFXExpl.transform.rotation = Quaternion.identity;
+        bombWFXExpl.SetActive(true);
         bombExplosion.Boom();
+        bombSound.Play();
+        bombBody.SetActive(false);
+        yield return new WaitForSeconds(5.5f);
         ReturnToArray();        
         yield break;
     }
@@ -28,6 +37,10 @@ public class Bomb : MonoBehaviour
     private void ReturnToArray()
     {
         Player.instance.bombs.Add(this);
+        bombWFXExpl.transform.parent = transform;
+        bombWFXExpl.transform.position = transform.position;
+        bombWFXExpl.SetActive(false);
+        bombBody.SetActive(true);
         transform.position = bombIdleParent.transform.position;
         transform.parent = bombIdleParent;
         transform.rotation = Quaternion.identity;
