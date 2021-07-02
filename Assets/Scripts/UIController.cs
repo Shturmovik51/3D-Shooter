@@ -47,7 +47,8 @@ public class UIController : MonoBehaviour
     }
     private void Start()
     {
-        musicSlider.value = BackGroundSound.instance.musicAudioSource.volume;
+        if(BackGroundSound.instance != null)
+            musicSlider.value = BackGroundSound.instance.musicAudioSource.volume;
     }
     private void Update()
     {
@@ -135,6 +136,7 @@ public class UIController : MonoBehaviour
     }
     private void MusicSliderValue(float value)
     {
-        BackGroundSound.instance.musicAudioSource.volume = value;
+        if (BackGroundSound.instance != null)
+            BackGroundSound.instance.musicAudioSource.volume = value;
     } 
 }

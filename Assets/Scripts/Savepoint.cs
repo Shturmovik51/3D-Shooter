@@ -33,6 +33,8 @@ public class Savepoint : MonoBehaviour
         Cursor.visible = false;
         Time.timeScale = 1;
         player.transform.position = transform.position;
+        player.transform.rotation = transform.rotation;
         cam.transform.position = transform.position;
+        cam.transform.rotation = transform.rotation;
     }
 }
